@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useSignal } from "@preact/signals";
 import { useEffect } from "preact/hooks";
 
@@ -22,9 +23,7 @@ export default function Home() {
                 {padded(date.getUTCHours())}:{padded(date.getUTCMinutes())}:
                 {padded(date.getSeconds())}
             </p>
-            <input type="button" value="Start" />
-            <input type="button" value="A" />
-            <input type="button" value="B" />
+            <Button>Start</Button>
         </div>
     );
 }
