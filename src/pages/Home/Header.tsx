@@ -9,20 +9,22 @@ import { TimerState } from "@/pages/Home/state";
 import { useContext } from "preact/hooks";
 
 export default function Header() {
-    const { isRunning, isPaused } = useContext(TimerState);
+    const { status } = useContext(TimerState);
 
     return (
         <CardHeader>
             <CardTitle>Stopwatch</CardTitle>
-            <CardDescription>
-                Easily track your concentration time :3
-            </CardDescription>
-            {isRunning.value && (
+            <CardDescription>Track your concentration time :3</CardDescription>
+            {status.value !== "stopped" && (
                 <CardAction>
                     <Badge
-                        className={`${isPaused.value ? "bg-orange-950 text-orange-300" : "bg-green-950 text-green-300"}`}
+                        className={
+                            status.value === "paused"
+                                ? "bg-orange-950 text-orange-300"
+                                : "bg-green-950 text-green-300"
+                        }
                     >
-                        {isPaused.value ? "Paused" : "Running"}
+                        {status.value === "paused" ? "Paused" : "Running"}
                     </Badge>
                 </CardAction>
             )}

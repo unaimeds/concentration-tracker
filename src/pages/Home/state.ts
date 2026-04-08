@@ -1,18 +1,27 @@
 import { Signal, signal } from "@preact/signals";
 import { createContext } from "preact";
 
+type TimerStatus = "stopped" | "running" | "paused" | "distracted";
+
+interface Distraction {
+    start: Date;
+    end: Date;
+}
+
 interface TimerStateValues {
-    isRunning: Signal<boolean>;
-    isPaused: Signal<boolean>;
+    status: Signal<TimerStatus>;
     totalSeconds: Signal<number>;
+    blips: Signal<number[]>;
+    distractions: Signal<Distraction[]>;
 }
 
 export function createTimerState(): TimerStateValues {
-    const isRunning = signal(false);
-    const isPaused = signal(false);
+    const status = signal<TimerStatus>("stopped");
     const totalSeconds = signal(0);
+    const blips = signal([]);
+    const distractions = signal([]);
 
-    return { isRunning, isPaused, totalSeconds };
+    return { status, totalSeconds, blips, distractions };
 }
 
 export const TimerState = createContext<TimerStateValues>(null);
