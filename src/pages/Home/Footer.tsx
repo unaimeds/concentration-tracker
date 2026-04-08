@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { CardFooter } from "@/components/ui/card";
 import {
     Collapsible,
     CollapsibleContent,
@@ -24,18 +23,45 @@ import {
     FlagIcon,
     WarningCircleIcon,
 } from "@phosphor-icons/react";
-import { useSignal } from "@preact/signals";
+import { useComputed, useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
 
 export default function Footer() {
     const { status, totalSeconds, blips, distractions } =
         useContext(TimerState);
 
+    const totalDistracted = useComputed(() =>
+        distractions.value
+            .flatMap(({ start, end }) => end - start)
+            .reduce((partialSum, c) => partialSum + c, 0),
+    );
+    const focusRate = useComputed(() =>
+        totalSeconds.value > 0
+            ? (totalSeconds.value /
+                  (totalSeconds.value + totalDistracted.value)) *
+              100
+            : 0,
+    );
+
     const blipsOpen = useSignal(false);
     const distractionsOpen = useSignal(false);
+    const distractionStart = useSignal<number | null>(null);
 
     const onBlip = () => {
         blips.value = [totalSeconds.value, ...blips.value];
+    };
+
+    const onDistracted = () => {
+        if (status.value === "distracted") {
+            distractions.value = [
+                { start: distractionStart.value, end: totalSeconds.value },
+                ...distractions.value,
+            ];
+            status.value = "running";
+            return;
+        }
+        status.value = "distracted";
+        distractionStart.value = totalSeconds.value;
     };
 
     return (
@@ -61,16 +87,18 @@ export default function Footer() {
                     <ItemContent>
                         <ItemTitle>Focus rate</ItemTitle>
                         <ItemDescription className="text-xl">
-                            {status.value !== "stopped" ? "78%" : "?%"}
+                            {status.value !== "stopped"
+                                ? `${focusRate.value.toFixed(0)}%`
+                                : "?%"}
                         </ItemDescription>
                         <ItemFooter>
-                            <Progress value={78} />
+                            <Progress value={focusRate.value} />
                         </ItemFooter>
                     </ItemContent>
                 </Item>
             </ItemGroup>
 
-            <div className="mt-4">
+            <div className="flex flex-col gap-1 mt-4">
                 <Collapsible
                     open={blipsOpen.value}
                     onOpenChange={(v) => (blipsOpen.value = v)}
@@ -101,6 +129,38 @@ export default function Footer() {
                         </Table>
                     </CollapsibleContent>
                 </Collapsible>
+                <Collapsible
+                    open={distractionsOpen.value}
+                    onOpenChange={(v) => (distractionsOpen.value = v)}
+                >
+                    <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="group w-full">
+                            Distractions
+                            <CaretDownIcon
+                                weight="fill"
+                                className="size-3 ml-auto group-data-[state=open]:rotate-180"
+                            />
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <Table>
+                            <TableBody>
+                                {distractions.value.map(
+                                    ({ start, end }, idx) => (
+                                        <TableRow>
+                                            <TableCell className="pl-2">
+                                                Distraction #{idx}
+                                            </TableCell>
+                                            <TableCell className="text-right pr-2">
+                                                {secondsToDuration(end - start)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ),
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CollapsibleContent>
+                </Collapsible>
             </div>
 
             <Separator className="my-4" />
@@ -117,10 +177,13 @@ export default function Footer() {
                 <Button
                     variant="secondary"
                     className="flex-1"
+                    onClick={onDistracted}
                     disabled={status.value === "stopped"}
                 >
                     <WarningCircleIcon weight="fill" className="size-3" />
-                    Distracted
+                    {status.value === "distracted"
+                        ? "Not distracted"
+                        : "Distracted"}
                 </Button>
             </ButtonGroup>
         </div>

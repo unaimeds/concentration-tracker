@@ -4,8 +4,8 @@ import { createContext } from "preact";
 type TimerStatus = "stopped" | "running" | "paused" | "distracted";
 
 interface Distraction {
-    start: Date;
-    end: Date;
+    start: number;
+    end: number;
 }
 
 interface TimerStateValues {

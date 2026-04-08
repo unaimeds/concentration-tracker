@@ -10,7 +10,6 @@ import { useContext, useEffect } from "preact/hooks";
 export default function Content() {
     const { status, totalSeconds, blips, distractions } =
         useContext(TimerState);
-    const date = new Date(totalSeconds.value * 1000);
 
     useEffect(() => {
         if (status.value === "stopped" || status.value === "paused") {
