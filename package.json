@@ -7,12 +7,13 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@fontsource-variable/geist": "^5.2.8",
+        "@fontsource-variable/oxanium": "^5.2.8",
+        "@fontsource-variable/space-grotesk": "^5.2.10",
+        "@phosphor-icons/react": "^2.1.10",
         "@preact/signals": "^2.9.0",
         "@tailwindcss/vite": "^4.2.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
-        "lucide-react": "^1.7.0",
         "preact": "^10.26.9",
         "preact-iso": "^2.11.1",
         "radix-ui": "^1.4.3",

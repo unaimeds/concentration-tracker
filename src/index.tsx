@@ -8,7 +8,7 @@ import { NotFound } from "@/pages/_404";
 export function App() {
     return (
         <LocationProvider>
-            <main>
+            <main className="mx-auto flex flex-col py-12">
                 <Router>
                     <Route path="/" component={Home} />
                     <Route default component={NotFound} />
