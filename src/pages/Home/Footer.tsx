@@ -118,7 +118,7 @@ export default function Footer() {
                                 {blips.value.map((secs, idx) => (
                                     <TableRow>
                                         <TableCell className="pl-2">
-                                            Blip #{idx}
+                                            Blip #{idx + 1}
                                         </TableCell>
                                         <TableCell className="text-right pr-2">
                                             {secondsToDuration(secs)}
@@ -149,7 +149,7 @@ export default function Footer() {
                                     ({ start, end }, idx) => (
                                         <TableRow>
                                             <TableCell className="pl-2">
-                                                Distraction #{idx}
+                                                Distraction #{idx + 1}
                                             </TableCell>
                                             <TableCell className="text-right pr-2">
                                                 {secondsToDuration(end - start)}
