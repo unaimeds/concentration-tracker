@@ -120,7 +120,7 @@ export default function Footer() {
                             />
                         </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
+                    <CollapsibleContent className="bg-secondary">
                         {blips.value.length === 0 ? (
                             <EmptyState icon={FlagIcon} message="No blips recorded yet" />
                         ) : (
@@ -155,7 +155,7 @@ export default function Footer() {
                             />
                         </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
+                    <CollapsibleContent className="bg-secondary">
                         {distractions.value.length === 0 ? (
                             <EmptyState
                                 icon={WarningCircleIcon}
@@ -187,7 +187,7 @@ export default function Footer() {
                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
                         Session summary
                     </p>
-                    <div className="border rounded-md divide-y text-sm">
+                    <div className="border divide-y text-sm">
                         <div className="flex justify-between px-3 py-2">
                             <span className="text-muted-foreground">Total duration</span>
                             <span>{secondsToDuration(totalSeconds.value)}</span>
