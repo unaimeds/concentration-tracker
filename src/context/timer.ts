@@ -1,12 +1,8 @@
+import { Distraction } from "@/types/distraction";
 import { Signal, signal } from "@preact/signals";
 import { createContext } from "preact";
 
 type TimerStatus = "stopped" | "running" | "paused" | "distracted";
-
-export interface Distraction {
-    start: number;
-    end: number;
-}
 
 interface TimerStateValues {
     status: Signal<TimerStatus>;

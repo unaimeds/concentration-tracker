@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TimerState } from "@/pages/Home/state";
+import { TimerState } from "@/context/timer";
 import { useContext } from "preact/hooks";
 
 const STATUS_BADGE: Record<string, { className: string; label: string }> = {

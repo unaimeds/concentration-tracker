@@ -1,10 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import Footer from "@/pages/Home/Footer";
-import { secondsToDuration } from "@/pages/Home/math";
-import { TimerState } from "@/pages/Home/state";
-import { PlayIcon, StopIcon, PauseIcon } from "@phosphor-icons/react";
+import { TimerState } from "@/context/timer";
+import { secondsToDuration } from "@/utils/math";
+import { PauseIcon, PlayIcon, StopIcon } from "@phosphor-icons/react";
 import { useContext, useEffect } from "preact/hooks";
 
 const SUBTITLES: Record<string, string> = {
@@ -13,7 +10,7 @@ const SUBTITLES: Record<string, string> = {
     distracted: "getting distracted...",
 };
 
-export default function Content() {
+export default function TimerDisplay() {
     const { status, totalSeconds, blips, distractions, distractionStart } =
         useContext(TimerState);
 
@@ -55,7 +52,7 @@ export default function Content() {
     const hasSessionData = status.value === "stopped" && totalSeconds.value > 0;
 
     return (
-        <CardContent className="flex flex-col items-center">
+        <>
             <p className="text-5xl font-medium tracking-tight">
                 {secondsToDuration(totalSeconds.value)}
             </p>
@@ -86,8 +83,6 @@ export default function Content() {
                     </Button>
                 )}
             </div>
-            <Separator className="my-4" />
-            <Footer />
-        </CardContent>
+        </>
     );
 }
