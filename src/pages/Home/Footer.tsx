@@ -26,6 +26,7 @@ import { CaretDownIcon, FlagIcon, WarningCircleIcon } from "@phosphor-icons/reac
 import { useComputed, useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
 import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 export default function Footer() {
     const { status, totalSeconds, blips, distractions, distractionStart } =
@@ -96,7 +97,7 @@ export default function Footer() {
                     <ItemContent>
                         <ItemTitle>Focus rate</ItemTitle>
                         <ItemDescription className="text-xl">
-                            {isIdle ? "-" : `${focusRate.value.toFixed(0)}%`}
+                            {isIdle ? "—" : `${focusRate.value.toFixed(0)}%`}
                         </ItemDescription>
                         <ItemFooter>
                             <Progress value={isIdle ? 0 : focusRate.value} />
@@ -254,12 +255,13 @@ export default function Footer() {
     );
 }
 
-// TODO: check if shadcn ui component fits instead of this
-const EmptyState = ({ icon: Icon, message }: { icon: PhosphorIcon; message: string }) => {
-    return (
-        <div className="flex flex-col items-center gap-2 py-8 text-muted-foreground">
-            <Icon className="size-8 opacity-40" />
-            <p className="text-sm">{message}</p>
-        </div>
-    );
-};
+const EmptyState = ({ icon: Icon, message }: { icon: PhosphorIcon; message: string }) => (
+    <Empty>
+        <EmptyHeader>
+            <EmptyMedia>
+                <Icon className="size-8 opacity-40" />
+            </EmptyMedia>
+            <EmptyTitle>{message}</EmptyTitle>
+        </EmptyHeader>
+    </Empty>
+);
