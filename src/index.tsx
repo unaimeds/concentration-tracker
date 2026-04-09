@@ -6,10 +6,11 @@ import Home from "@/pages/Home";
 import { NotFound } from "@/pages/_404";
 import { Toaster } from "@/components/ui/sonner";
 
+// TODO: make it SPA vro
 export function App() {
     return (
         <LocationProvider>
-            <main className="mx-auto flex flex-col py-20">
+            <main className="mx-auto flex flex-col pt-20">
                 <Router>
                     <Route path="/" component={Home} />
                     <Route default component={NotFound} />
