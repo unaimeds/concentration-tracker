@@ -16,7 +16,7 @@ export default function Actions() {
         if (status.value === "distracted") {
             distractions.value = [
                 ...distractions.value,
-                { start: distractionStart.value, end: totalSeconds.value },
+                { start: distractionStart.value!, end: totalSeconds.value },
             ];
             distractionStart.value = null;
             status.value = "running";

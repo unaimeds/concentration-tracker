@@ -1,9 +1,9 @@
-import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "radix-ui";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { ComponentPropsWithoutRef } from "preact/compat";
 
 function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
     return (
@@ -58,7 +58,7 @@ function Item({
     size = "default",
     asChild = false,
     ...props
-}: React.ComponentProps<"div"> &
+}: ComponentPropsWithoutRef<"div"> &
     VariantProps<typeof itemVariants> & { asChild?: boolean }) {
     const Comp = asChild ? Slot.Root : "div";
     return (

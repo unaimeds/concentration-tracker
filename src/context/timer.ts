@@ -22,4 +22,4 @@ export function createTimerState(): TimerStateValues {
     return { status, totalSeconds, blips, distractions, distractionStart };
 }
 
-export const TimerState = createContext<TimerStateValues>(null);
+export const TimerState = createContext<TimerStateValues>(createTimerState());
