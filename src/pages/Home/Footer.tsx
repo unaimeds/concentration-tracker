@@ -75,7 +75,7 @@ export default function Footer() {
     const isDisabled = isStopped || status.value === "paused";
 
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex w-full flex-col">
             <ItemGroup className="flex-row">
                 <Item variant="outline">
                     <ItemContent>
@@ -106,7 +106,7 @@ export default function Footer() {
                 </Item>
             </ItemGroup>
 
-            <div className="flex flex-col gap-1 mt-4">
+            <div className="mt-4 flex flex-col gap-1">
                 <Collapsible
                     open={blipsOpen.value}
                     onOpenChange={(v) => (blipsOpen.value = v)}
@@ -116,7 +116,7 @@ export default function Footer() {
                             Blips
                             <CaretDownIcon
                                 weight="fill"
-                                className="size-3 ml-auto transition-transform group-data-[state=open]:rotate-180"
+                                className="ml-auto size-3 transition-transform group-data-[state=open]:rotate-180"
                             />
                         </Button>
                     </CollapsibleTrigger>
@@ -131,7 +131,7 @@ export default function Footer() {
                                             <TableCell className="pl-2">
                                                 Blip #{idx + 1}
                                             </TableCell>
-                                            <TableCell className="text-right pr-2">
+                                            <TableCell className="pr-2 text-right">
                                                 {secondsToDuration(secs)}
                                             </TableCell>
                                         </TableRow>
@@ -151,7 +151,7 @@ export default function Footer() {
                             Distractions
                             <CaretDownIcon
                                 weight="fill"
-                                className="size-3 ml-auto transition-transform group-data-[state=open]:rotate-180"
+                                className="ml-auto size-3 transition-transform group-data-[state=open]:rotate-180"
                             />
                         </Button>
                     </CollapsibleTrigger>
@@ -169,7 +169,7 @@ export default function Footer() {
                                             <TableCell className="pl-2">
                                                 Distraction #{idx + 1}
                                             </TableCell>
-                                            <TableCell className="text-right pr-2">
+                                            <TableCell className="pr-2 text-right">
                                                 {secondsToDuration(end - start)}
                                             </TableCell>
                                         </TableRow>
@@ -184,10 +184,10 @@ export default function Footer() {
             {isStopped && !isIdle && (
                 <>
                     <Separator className="my-4" />
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                    <p className="text-muted-foreground mb-2 text-xs font-medium tracking-wider uppercase">
                         Session summary
                     </p>
-                    <div className="border divide-y text-sm">
+                    <div className="divide-y border text-sm">
                         <div className="flex justify-between px-3 py-2">
                             <span className="text-muted-foreground">Total duration</span>
                             <span>{secondsToDuration(totalSeconds.value)}</span>

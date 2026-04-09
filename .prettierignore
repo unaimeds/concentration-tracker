@@ -1,3 +1,6 @@
 dist
 node_modules
 pnpm-lock.yaml
+src/components/ui
+src/lib/utils.ts
+components.json

@@ -59,7 +59,7 @@ export default function Content() {
             <p className="text-5xl font-medium tracking-tight">
                 {secondsToDuration(totalSeconds.value)}
             </p>
-            {subtitle && <p className="text-muted-foreground text-sm mt-1">{subtitle}</p>}
+            {subtitle && <p className="text-muted-foreground mt-1 text-sm">{subtitle}</p>}
             <div className="mt-4 flex gap-1">
                 {status.value !== "stopped" ? (
                     <>
