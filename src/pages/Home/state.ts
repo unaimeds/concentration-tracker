@@ -3,7 +3,7 @@ import { createContext } from "preact";
 
 type TimerStatus = "stopped" | "running" | "paused" | "distracted";
 
-interface Distraction {
+export interface Distraction {
     start: number;
     end: number;
 }
@@ -13,15 +13,17 @@ interface TimerStateValues {
     totalSeconds: Signal<number>;
     blips: Signal<number[]>;
     distractions: Signal<Distraction[]>;
+    distractionStart: Signal<number | null>;
 }
 
 export function createTimerState(): TimerStateValues {
     const status = signal<TimerStatus>("stopped");
     const totalSeconds = signal(0);
-    const blips = signal([]);
-    const distractions = signal([]);
+    const blips = signal<number[]>([]);
+    const distractions = signal<Distraction[]>([]);
+    const distractionStart = signal(null);
 
-    return { status, totalSeconds, blips, distractions };
+    return { status, totalSeconds, blips, distractions, distractionStart };
 }
 
 export const TimerState = createContext<TimerStateValues>(null);

@@ -7,8 +7,14 @@ import { TimerState } from "@/pages/Home/state";
 import { PlayIcon, StopIcon, PauseIcon } from "@phosphor-icons/react";
 import { useContext, useEffect } from "preact/hooks";
 
+const SUBTITLES: Record<string, string> = {
+    running: "session in progress",
+    paused: "paused",
+    distracted: "getting distracted...",
+};
+
 export default function Content() {
-    const { status, totalSeconds, blips, distractions } =
+    const { status, totalSeconds, blips, distractions, distractionStart } =
         useContext(TimerState);
 
     useEffect(() => {
@@ -16,34 +22,44 @@ export default function Content() {
             return;
         }
 
-        let interval = setInterval(() => {
-            totalSeconds.value += 1;
+        const interval = setInterval(() => {
+            totalSeconds.value++;
         }, 1000);
 
-        return () => {
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
     }, [status.value]);
 
     const onStart = () => {
         blips.value = [];
         distractions.value = [];
+        totalSeconds.value = 0;
+        distractionStart.value = null;
         status.value = "running";
     };
-    // TODO: ask for confirmation before stopping
+
     const onStop = () => {
+        if (status.value === "distracted" && distractionStart.value !== null) {
+            distractions.value = [
+                ...distractions.value,
+                { start: distractionStart.value, end: totalSeconds.value },
+            ];
+            distractionStart.value = null;
+        }
         status.value = "stopped";
-        totalSeconds.value = 0;
     };
+
     const onResume = () => (status.value = "running");
     const onPause = () => (status.value = "paused");
 
+    const subtitle = SUBTITLES[status.value] ?? null;
+    const hasSessionData = status.value === "stopped" && totalSeconds.value > 0;
+
     return (
         <CardContent className="flex flex-col items-center">
-            <p className="text-5xl">{secondsToDuration(totalSeconds.value)}</p>
-            {status.value !== "stopped" && (
-                <p className="text-muted-foreground">session in progress</p>
-            )}
+            <p className="text-5xl font-medium tracking-tight">
+                {secondsToDuration(totalSeconds.value)}
+            </p>
+            {subtitle && <p className="text-muted-foreground text-sm mt-1">{subtitle}</p>}
             <div className="mt-4 flex gap-1">
                 {status.value !== "stopped" ? (
                     <>
@@ -58,7 +74,7 @@ export default function Content() {
                                 Pause
                             </Button>
                         )}
-                        <Button onClick={onStop}>
+                        <Button variant="destructive" onClick={onStop}>
                             <StopIcon weight="fill" className="size-3" />
                             Stop
                         </Button>
@@ -66,7 +82,7 @@ export default function Content() {
                 ) : (
                     <Button onClick={onStart}>
                         <PlayIcon weight="fill" className="size-3" />
-                        Start
+                        {hasSessionData ? "New session" : "Start"}
                     </Button>
                 )}
             </div>

@@ -16,53 +16,62 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { secondsToDuration } from "@/pages/Home/math";
-import { TimerState } from "@/pages/Home/state";
 import {
-    CaretDownIcon,
-    FlagIcon,
-    WarningCircleIcon,
-} from "@phosphor-icons/react";
+    avgDurationSeconds,
+    avgIntervalSeconds,
+    secondsToDuration,
+} from "@/pages/Home/math";
+import { TimerState } from "@/pages/Home/state";
+import { CaretDownIcon, FlagIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { useComputed, useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
+import type { Icon as PhosphorIcon } from "@phosphor-icons/react";
 
 export default function Footer() {
-    const { status, totalSeconds, blips, distractions } =
+    const { status, totalSeconds, blips, distractions, distractionStart } =
         useContext(TimerState);
 
     const totalDistracted = useComputed(() =>
-        distractions.value
-            .flatMap(({ start, end }) => end - start)
-            .reduce((partialSum, c) => partialSum + c, 0),
+        distractions.value.reduce((sum, { start, end }) => sum + (end - start), 0),
     );
     const focusRate = useComputed(() =>
         totalSeconds.value > 0
-            ? (totalSeconds.value /
-                  (totalSeconds.value + totalDistracted.value)) *
-              100
+            ? ((totalSeconds.value - totalDistracted.value) / totalSeconds.value) * 100
             : 0,
+    );
+
+    const avgBlipInterval = useComputed(() => avgIntervalSeconds(blips.value));
+    const avgDistractionDuration = useComputed(() =>
+        avgDurationSeconds(distractions.value.map(({ start, end }) => end - start)),
+    );
+    const avgDistractionInterval = useComputed(() =>
+        avgIntervalSeconds(distractions.value.map((d) => d.start)),
     );
 
     const blipsOpen = useSignal(false);
     const distractionsOpen = useSignal(false);
-    const distractionStart = useSignal<number | null>(null);
 
     const onBlip = () => {
-        blips.value = [totalSeconds.value, ...blips.value];
+        blips.value = [...blips.value, totalSeconds.value];
     };
 
     const onDistracted = () => {
         if (status.value === "distracted") {
             distractions.value = [
-                { start: distractionStart.value, end: totalSeconds.value },
                 ...distractions.value,
+                { start: distractionStart.value, end: totalSeconds.value },
             ];
+            distractionStart.value = null;
             status.value = "running";
             return;
         }
-        status.value = "distracted";
         distractionStart.value = totalSeconds.value;
+        status.value = "distracted";
     };
+
+    const isStopped = status.value === "stopped";
+    const isIdle = isStopped && totalSeconds.value === 0;
+    const isDisabled = isStopped || status.value === "paused";
 
     return (
         <div className="flex flex-col w-full">
@@ -87,12 +96,10 @@ export default function Footer() {
                     <ItemContent>
                         <ItemTitle>Focus rate</ItemTitle>
                         <ItemDescription className="text-xl">
-                            {status.value !== "stopped"
-                                ? `${focusRate.value.toFixed(0)}%`
-                                : "?%"}
+                            {isIdle ? "-" : `${focusRate.value.toFixed(0)}%`}
                         </ItemDescription>
                         <ItemFooter>
-                            <Progress value={focusRate.value} />
+                            <Progress value={isIdle ? 0 : focusRate.value} />
                         </ItemFooter>
                     </ItemContent>
                 </Item>
@@ -108,27 +115,32 @@ export default function Footer() {
                             Blips
                             <CaretDownIcon
                                 weight="fill"
-                                className="size-3 ml-auto group-data-[state=open]:rotate-180"
+                                className="size-3 ml-auto transition-transform group-data-[state=open]:rotate-180"
                             />
                         </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <Table>
-                            <TableBody>
-                                {blips.value.map((secs, idx) => (
-                                    <TableRow>
-                                        <TableCell className="pl-2">
-                                            Blip #{idx + 1}
-                                        </TableCell>
-                                        <TableCell className="text-right pr-2">
-                                            {secondsToDuration(secs)}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                        {blips.value.length === 0 ? (
+                            <EmptyState icon={FlagIcon} message="No blips recorded yet" />
+                        ) : (
+                            <Table>
+                                <TableBody>
+                                    {blips.value.map((secs, idx) => (
+                                        <TableRow key={idx}>
+                                            <TableCell className="pl-2">
+                                                Blip #{idx + 1}
+                                            </TableCell>
+                                            <TableCell className="text-right pr-2">
+                                                {secondsToDuration(secs)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        )}
                     </CollapsibleContent>
                 </Collapsible>
+
                 <Collapsible
                     open={distractionsOpen.value}
                     onOpenChange={(v) => (distractionsOpen.value = v)}
@@ -138,16 +150,21 @@ export default function Footer() {
                             Distractions
                             <CaretDownIcon
                                 weight="fill"
-                                className="size-3 ml-auto group-data-[state=open]:rotate-180"
+                                className="size-3 ml-auto transition-transform group-data-[state=open]:rotate-180"
                             />
                         </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
-                        <Table>
-                            <TableBody>
-                                {distractions.value.map(
-                                    ({ start, end }, idx) => (
-                                        <TableRow>
+                        {distractions.value.length === 0 ? (
+                            <EmptyState
+                                icon={WarningCircleIcon}
+                                message="No distractions recorded yet"
+                            />
+                        ) : (
+                            <Table>
+                                <TableBody>
+                                    {distractions.value.map(({ start, end }, idx) => (
+                                        <TableRow key={idx}>
                                             <TableCell className="pl-2">
                                                 Distraction #{idx + 1}
                                             </TableCell>
@@ -155,13 +172,62 @@ export default function Footer() {
                                                 {secondsToDuration(end - start)}
                                             </TableCell>
                                         </TableRow>
-                                    ),
-                                )}
-                            </TableBody>
-                        </Table>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        )}
                     </CollapsibleContent>
                 </Collapsible>
             </div>
+
+            {isStopped && !isIdle && (
+                <>
+                    <Separator className="my-4" />
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+                        Session summary
+                    </p>
+                    <div className="border rounded-md divide-y text-sm">
+                        <div className="flex justify-between px-3 py-2">
+                            <span className="text-muted-foreground">Total duration</span>
+                            <span>{secondsToDuration(totalSeconds.value)}</span>
+                        </div>
+                        {avgBlipInterval.value !== null && (
+                            <div className="flex justify-between px-3 py-2">
+                                <span className="text-muted-foreground">
+                                    Avg. time between blips
+                                </span>
+                                <span>
+                                    {secondsToDuration(Math.round(avgBlipInterval.value))}
+                                </span>
+                            </div>
+                        )}
+                        {avgDistractionDuration.value !== null && (
+                            <div className="flex justify-between px-3 py-2">
+                                <span className="text-muted-foreground">
+                                    Avg. distraction duration
+                                </span>
+                                <span>
+                                    {secondsToDuration(
+                                        Math.round(avgDistractionDuration.value),
+                                    )}
+                                </span>
+                            </div>
+                        )}
+                        {avgDistractionInterval.value !== null && (
+                            <div className="flex justify-between px-3 py-2">
+                                <span className="text-muted-foreground">
+                                    Avg. time between distractions
+                                </span>
+                                <span>
+                                    {secondsToDuration(
+                                        Math.round(avgDistractionInterval.value),
+                                    )}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
 
             <Separator className="my-4" />
             <ButtonGroup className="w-full gap-1">
@@ -169,7 +235,7 @@ export default function Footer() {
                     variant="secondary"
                     className="flex-1"
                     onClick={onBlip}
-                    disabled={status.value === "stopped"}
+                    disabled={isDisabled}
                 >
                     <FlagIcon weight="fill" className="size-3" />
                     Blip
@@ -178,14 +244,22 @@ export default function Footer() {
                     variant="secondary"
                     className="flex-1"
                     onClick={onDistracted}
-                    disabled={status.value === "stopped"}
+                    disabled={isDisabled}
                 >
                     <WarningCircleIcon weight="fill" className="size-3" />
-                    {status.value === "distracted"
-                        ? "Not distracted"
-                        : "Distracted"}
+                    {status.value === "distracted" ? "Not distracted" : "Distracted"}
                 </Button>
             </ButtonGroup>
         </div>
     );
 }
+
+// TODO: check if shadcn ui component fits instead of this
+const EmptyState = ({ icon: Icon, message }: { icon: PhosphorIcon; message: string }) => {
+    return (
+        <div className="flex flex-col items-center gap-2 py-8 text-muted-foreground">
+            <Icon className="size-8 opacity-40" />
+            <p className="text-sm">{message}</p>
+        </div>
+    );
+};
