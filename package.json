@@ -2,10 +2,13 @@
     "private": true,
     "version": "1.0.0",
     "type": "module",
+    "packageManager": "pnpm@10.32.1",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "format": "prettier --check .",
+        "lint": "eslint src"
     },
     "dependencies": {
         "@fontsource-variable/oxanium": "^5.2.8",
@@ -28,7 +31,12 @@
     "devDependencies": {
         "@preact/preset-vite": "^2.10.2",
         "@types/node": "^25.5.2",
+        "eslint": "^10.2.0",
+        "globals": "^17.4.0",
+        "prettier": "^3.8.1",
+        "prettier-plugin-tailwindcss": "^0.7.2",
         "typescript": "^6.0.2",
+        "typescript-eslint": "^8.58.1",
         "vite": "^7.0.4"
     }
 }

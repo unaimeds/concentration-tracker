@@ -33,8 +33,8 @@ Built using TypeScript with Preact framework, TailwindCSS for inline styling, an
 ## Running locally
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Then open [http://localhost:5173](http://localhost:5173).
@@ -42,7 +42,7 @@ Then open [http://localhost:5173](http://localhost:5173).
 ## Building
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Website is then built to `dist/` directory.
