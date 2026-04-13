@@ -136,11 +136,3 @@
         cursor: pointer;
     }
 }
-
-html {
-    font-size: 20px;
-}
-
-main {
-    width: min(80%, 600px);
-}

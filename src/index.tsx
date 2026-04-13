@@ -5,7 +5,7 @@ import Tracker from "@/components/Tracker";
 
 export function App() {
     return (
-        <main className="mx-auto flex flex-col pt-20">
+        <main className="mx-auto flex w-full flex-col px-3 pt-20 sm:w-[min(80%,600px)]">
             <Tracker />
         </main>
     );
