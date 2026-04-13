@@ -8,6 +8,8 @@ Built using TypeScript with Preact framework, TailwindCSS for inline styling, an
 > This was built primarily for my own use in a short time, so don't expect high quality code.  
 > It was also my first time using shadcn/ui, so some things might not fit visually together.
 
+You can access it at: https://tracker.unaimeds.dev
+
 ## Screenshots
 
 ![Running Stopwatch](screenshots/running-collapsed.png)
