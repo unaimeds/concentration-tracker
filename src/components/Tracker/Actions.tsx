@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Input } from "@/components/ui/input";
 import { TimerState } from "@/context/timer";
 import { FlagIcon, WarningCircleIcon } from "@phosphor-icons/react";
-import { InputHTMLAttributes } from "preact";
 import { useContext } from "preact/hooks";
 
 export default function Actions() {
@@ -60,7 +60,7 @@ export default function Actions() {
                 </Button>
             </ButtonGroup>
             {status.value === "distracted" && (
-                <ReasonInput
+                <Input
                     placeholder="Reason (optional)"
                     value={distractionReason.value}
                     onInput={(e) =>
@@ -71,10 +71,3 @@ export default function Actions() {
         </div>
     );
 }
-
-const ReasonInput = (props: InputHTMLAttributes) => (
-    <input
-        className="border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 flex h-8 w-full border px-2.5 py-1 text-xs transition-colors outline-none file:border-0 file:bg-transparent file:text-xs file:font-medium focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
-        {...props}
-    />
-);
