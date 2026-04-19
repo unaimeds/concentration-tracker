@@ -27,7 +27,7 @@ You can access it at: https://timer.unaimeds.dev
 
 - Start / pause / stop a focus session (stopwatch)
 - Blip: mark a brief moment where your attention slipped
-- Distracted: track a full distraction period with a start and end time
+- Distracted: track a full distraction period with a start and end time; optionally enter a reason which appears in the distraction list
 - Live focus rate (calculated from total session duration and total duration you've been distracted)
 - Collapsible lists of all blip timestamps and distraction durations
 - Session summary after stopping: total duration, average time between blips, average distraction duration, average time between distractions
