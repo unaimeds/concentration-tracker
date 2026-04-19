@@ -36,10 +36,17 @@ export default function DistractionList() {
                 ) : (
                     <Table>
                         <TableBody>
-                            {distractions.value.map(({ start, end }, idx) => (
+                            {distractions.value.map(({ start, end, reason }, idx) => (
                                 <TableRow key={idx}>
                                     <TableCell className="pl-2">
-                                        Distraction #{idx + 1}
+                                        <div>
+                                            Distraction #{idx + 1}
+                                            {reason && (
+                                                <p className="text-muted-foreground text-xs">
+                                                    {reason}
+                                                </p>
+                                            )}
+                                        </div>
                                     </TableCell>
                                     <TableCell className="pr-2 text-right">
                                         {secondsToDuration(end - start)}

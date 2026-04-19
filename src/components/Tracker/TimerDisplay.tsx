@@ -11,7 +11,7 @@ const SUBTITLES: Record<string, string> = {
 };
 
 export default function TimerDisplay() {
-    const { status, totalSeconds, blips, distractions, distractionStart } =
+    const { status, totalSeconds, blips, distractions, distractionStart, distractionReason } =
         useContext(TimerState);
 
     useEffect(() => {
@@ -31,16 +31,19 @@ export default function TimerDisplay() {
         distractions.value = [];
         totalSeconds.value = 0;
         distractionStart.value = null;
+        distractionReason.value = "";
         status.value = "running";
     };
 
     const onStop = () => {
         if (status.value === "distracted" && distractionStart.value !== null) {
+            const reason = distractionReason.value.trim() || undefined;
             distractions.value = [
                 ...distractions.value,
-                { start: distractionStart.value, end: totalSeconds.value },
+                { start: distractionStart.value, end: totalSeconds.value, reason },
             ];
             distractionStart.value = null;
+            distractionReason.value = "";
         }
         status.value = "stopped";
     };

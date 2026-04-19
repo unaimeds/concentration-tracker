@@ -10,6 +10,7 @@ interface TimerStateValues {
     blips: Signal<number[]>;
     distractions: Signal<Distraction[]>;
     distractionStart: Signal<number | null>;
+    distractionReason: Signal<string>;
 }
 
 export function createTimerState(): TimerStateValues {
@@ -18,8 +19,9 @@ export function createTimerState(): TimerStateValues {
     const blips = signal<number[]>([]);
     const distractions = signal<Distraction[]>([]);
     const distractionStart = signal(null);
+    const distractionReason = signal("");
 
-    return { status, totalSeconds, blips, distractions, distractionStart };
+    return { status, totalSeconds, blips, distractions, distractionStart, distractionReason };
 }
 
 export const TimerState = createContext<TimerStateValues>(createTimerState());
