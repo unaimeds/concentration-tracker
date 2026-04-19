@@ -11,6 +11,7 @@ interface TimerStateValues {
     distractions: Signal<Distraction[]>;
     distractionStart: Signal<number | null>;
     distractionReason: Signal<string>;
+    sessionLabel: Signal<string>;
 }
 
 export function createTimerState(): TimerStateValues {
@@ -20,6 +21,7 @@ export function createTimerState(): TimerStateValues {
     const distractions = signal<Distraction[]>([]);
     const distractionStart = signal(null);
     const distractionReason = signal("");
+    const sessionLabel = signal("");
 
     return {
         status,
@@ -28,6 +30,7 @@ export function createTimerState(): TimerStateValues {
         distractions,
         distractionStart,
         distractionReason,
+        sessionLabel,
     };
 }
 

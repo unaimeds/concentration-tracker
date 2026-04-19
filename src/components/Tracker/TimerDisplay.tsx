@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { TimerState } from "@/context/timer";
+import { useSessionHistory } from "@/hooks/useSessionHistory";
 import { secondsToDuration } from "@/utils/math";
 import { PauseIcon, PlayIcon, StopIcon } from "@phosphor-icons/react";
 import { useContext, useEffect } from "preact/hooks";
@@ -18,7 +19,9 @@ export default function TimerDisplay() {
         distractions,
         distractionStart,
         distractionReason,
+        sessionLabel,
     } = useContext(TimerState);
+    const { addSession } = useSessionHistory();
 
     useEffect(() => {
         if (status.value === "stopped" || status.value === "paused") {
@@ -41,15 +44,36 @@ export default function TimerDisplay() {
         status.value = "running";
     };
 
+    const onNewSession = () => {
+        blips.value = [];
+        distractions.value = [];
+        totalSeconds.value = 0;
+        distractionStart.value = null;
+        distractionReason.value = "";
+        sessionLabel.value = "";
+    };
+
     const onStop = () => {
+        let finalDistractions = distractions.value;
         if (status.value === "distracted" && distractionStart.value !== null) {
             const reason = distractionReason.value.trim() || undefined;
-            distractions.value = [
+            finalDistractions = [
                 ...distractions.value,
                 { start: distractionStart.value, end: totalSeconds.value, reason },
             ];
+            distractions.value = finalDistractions;
             distractionStart.value = null;
             distractionReason.value = "";
+        }
+        if (totalSeconds.value > 0) {
+            addSession({
+                id: crypto.randomUUID(),
+                label: sessionLabel.value.trim() || undefined,
+                date: Date.now(),
+                totalSeconds: totalSeconds.value,
+                blips: [...blips.value],
+                distractions: finalDistractions,
+            });
         }
         status.value = "stopped";
     };
@@ -85,10 +109,12 @@ export default function TimerDisplay() {
                             Stop
                         </Button>
                     </>
+                ) : hasSessionData ? (
+                    <Button onClick={onNewSession}>New session</Button>
                 ) : (
                     <Button onClick={onStart}>
                         <PlayIcon weight="fill" className="size-3" />
-                        {hasSessionData ? "New session" : "Start"}
+                        Start
                     </Button>
                 )}
             </div>

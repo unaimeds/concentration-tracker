@@ -1,19 +1,30 @@
 import { Separator } from "@/components/ui/separator";
 import { TimerState } from "@/context/timer";
+import { Distraction } from "@/types/distraction";
 import { avgDurationSeconds, avgIntervalSeconds, secondsToDuration } from "@/utils/math";
-import { useComputed } from "@preact/signals";
 import { useContext } from "preact/hooks";
 
-export default function SessionSummary() {
-    const { totalSeconds, blips, distractions } = useContext(TimerState);
+interface SessionSummaryProps {
+    totalSeconds?: number;
+    blips?: number[];
+    distractions?: Distraction[];
+}
 
-    const avgBlipInterval = useComputed(() => avgIntervalSeconds(blips.value));
-    const avgDistractionDuration = useComputed(() =>
-        avgDurationSeconds(distractions.value.map(({ start, end }) => end - start)),
+export default function SessionSummary({
+    totalSeconds: tsProp,
+    blips: blipsProp,
+    distractions: distractionsProp,
+}: SessionSummaryProps = {}) {
+    const ctx = useContext(TimerState);
+    const totalSeconds = tsProp ?? ctx.totalSeconds.value;
+    const blips = blipsProp ?? ctx.blips.value;
+    const distractions = distractionsProp ?? ctx.distractions.value;
+
+    const avgBlipInterval = avgIntervalSeconds(blips);
+    const avgDistractionDuration = avgDurationSeconds(
+        distractions.map(({ start, end }) => end - start),
     );
-    const avgDistractionInterval = useComputed(() =>
-        avgIntervalSeconds(distractions.value.map((d) => d.start)),
-    );
+    const avgDistractionInterval = avgIntervalSeconds(distractions.map((d) => d.start));
 
     return (
         <>
@@ -24,35 +35,33 @@ export default function SessionSummary() {
             <div className="divide-y border text-sm">
                 <div className="flex justify-between px-3 py-2">
                     <span className="text-muted-foreground">Total duration</span>
-                    <span>{secondsToDuration(totalSeconds.value)}</span>
+                    <span>{secondsToDuration(totalSeconds)}</span>
                 </div>
-                {avgBlipInterval.value !== null && (
+                {avgBlipInterval !== null && (
                     <div className="flex justify-between px-3 py-2">
                         <span className="text-muted-foreground">
                             Avg. time between blips
                         </span>
-                        <span>
-                            {secondsToDuration(Math.round(avgBlipInterval.value))}
-                        </span>
+                        <span>{secondsToDuration(Math.round(avgBlipInterval))}</span>
                     </div>
                 )}
-                {avgDistractionDuration.value !== null && (
+                {avgDistractionDuration !== null && (
                     <div className="flex justify-between px-3 py-2">
                         <span className="text-muted-foreground">
                             Avg. distraction duration
                         </span>
                         <span>
-                            {secondsToDuration(Math.round(avgDistractionDuration.value))}
+                            {secondsToDuration(Math.round(avgDistractionDuration))}
                         </span>
                     </div>
                 )}
-                {avgDistractionInterval.value !== null && (
+                {avgDistractionInterval !== null && (
                     <div className="flex justify-between px-3 py-2">
                         <span className="text-muted-foreground">
                             Avg. time between distractions
                         </span>
                         <span>
-                            {secondsToDuration(Math.round(avgDistractionInterval.value))}
+                            {secondsToDuration(Math.round(avgDistractionInterval))}
                         </span>
                     </div>
                 )}

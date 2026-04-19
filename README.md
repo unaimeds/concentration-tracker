@@ -26,11 +26,13 @@ You can access it at: https://timer.unaimeds.dev
 ## Features
 
 - Start / pause / stop a focus session (stopwatch)
+- Optional session label set before starting, saved with the session
 - Blip: mark a brief moment where your attention slipped
-- Distracted: track a full distraction period with a start and end time; optionally enter a reason which appears in the distraction list
+- Distracted: track a full distraction period with a start and end time. Optionally enter a reason which appears in the distraction list
 - Live focus rate (calculated from total session duration and total duration you've been distracted)
 - Collapsible lists of all blip timestamps and distraction durations
 - Session summary after stopping: total duration, average time between blips, average distraction duration, average time between distractions
+- Session history stored locally in the browser (localStorage), accessible via the history button in the header. Each past session shows its full stats, blip list, distraction list, and summary. Sessions can be deleted individually or all at once
 
 ## Running locally
 

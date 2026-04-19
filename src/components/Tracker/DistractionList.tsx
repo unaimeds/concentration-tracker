@@ -7,17 +7,22 @@ import {
 import { EmptyState } from "@/components/Tracker/EmptyState";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TimerState } from "@/context/timer";
+import { Distraction } from "@/types/distraction";
 import { secondsToDuration } from "@/utils/math";
 import { CaretDownIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { useSignal } from "@preact/signals";
 import { useContext } from "preact/hooks";
 
-export default function DistractionList() {
-    const { distractions } = useContext(TimerState);
-    const open = useSignal(false);
+export default function DistractionList({
+    distractions: distractionsProp,
+}: { distractions?: Distraction[] } = {}) {
+    const ctx = useContext(TimerState);
+    const distractions = distractionsProp ?? ctx.distractions.value;
+
+    const isOpen = useSignal(false);
 
     return (
-        <Collapsible open={open.value} onOpenChange={(v) => (open.value = v)}>
+        <Collapsible open={isOpen.value} onOpenChange={(v) => (isOpen.value = v)}>
             <CollapsibleTrigger asChild>
                 <Button variant="outline" className="group w-full">
                     Distractions
@@ -28,7 +33,7 @@ export default function DistractionList() {
                 </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="bg-secondary">
-                {distractions.value.length === 0 ? (
+                {distractions.length === 0 ? (
                     <EmptyState
                         icon={WarningCircleIcon}
                         message="No distractions recorded yet"
@@ -36,7 +41,7 @@ export default function DistractionList() {
                 ) : (
                     <Table>
                         <TableBody>
-                            {distractions.value.map(({ start, end, reason }, idx) => (
+                            {distractions.map(({ start, end, reason }, idx) => (
                                 <TableRow key={idx}>
                                     <TableCell className="pl-2">
                                         <div>
