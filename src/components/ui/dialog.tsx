@@ -23,7 +23,7 @@ function DialogPortal({
     container?: HTMLElement;
 }) {
     if (typeof document === "undefined") return null;
-    return createPortal(children, container ?? document.body) as any;
+    return createPortal(children, container ?? document.body);
 }
 
 function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
