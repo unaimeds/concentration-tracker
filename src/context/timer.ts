@@ -21,7 +21,14 @@ export function createTimerState(): TimerStateValues {
     const distractionStart = signal(null);
     const distractionReason = signal("");
 
-    return { status, totalSeconds, blips, distractions, distractionStart, distractionReason };
+    return {
+        status,
+        totalSeconds,
+        blips,
+        distractions,
+        distractionStart,
+        distractionReason,
+    };
 }
 
 export const TimerState = createContext<TimerStateValues>(createTimerState());

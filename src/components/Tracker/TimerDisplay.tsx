@@ -11,8 +11,14 @@ const SUBTITLES: Record<string, string> = {
 };
 
 export default function TimerDisplay() {
-    const { status, totalSeconds, blips, distractions, distractionStart, distractionReason } =
-        useContext(TimerState);
+    const {
+        status,
+        totalSeconds,
+        blips,
+        distractions,
+        distractionStart,
+        distractionReason,
+    } = useContext(TimerState);
 
     useEffect(() => {
         if (status.value === "stopped" || status.value === "paused") {
